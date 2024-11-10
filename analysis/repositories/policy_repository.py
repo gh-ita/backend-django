@@ -14,7 +14,8 @@ class PolicyRepository(IPolicyRepository):
         for coverage in coverages:
             field_name = coverage.name
             count = Policy.objects.filter(**{field_name: True}).count()
-            coverage_count[field_name] = count
+            if count != 0 :
+                coverage_count[field_name] = count
         sorted_coverage_count = sorted(
             coverage_count.items(), key=lambda x: x[1])
         return sorted_coverage_count
@@ -23,7 +24,7 @@ class PolicyRepository(IPolicyRepository):
         """A method for the pie chart of coverage types with filters which are gender, income group, vehicle segment, region"""
         cache_key = f"coverages_count_filtered_{ordered_filters}"
         sorted_coverage_count = cache.get(cache_key)
-        if coverage_count is None:
+        if sorted_coverage_count is None:
             coverages = Coverage_type.objects.all()
             coverage_count = {}
 
@@ -31,7 +32,7 @@ class PolicyRepository(IPolicyRepository):
 
             for coverage in coverages:
                 # Start with policies by coverage type
-                queryset = Policy.objects.filter(coverage_type=coverage)
+                queryset = Policy.objects.filter(**{coverage.name: True})
                 # If there ’s only one filter, use it directly for aggregation
                 if len(ordered_filters) == 1:
                     if last_field == "vehicle_segment":
@@ -49,17 +50,20 @@ class PolicyRepository(IPolicyRepository):
                             queryset = queryset.filter(vehicle_segment=value)
                         else:
                             queryset = queryset.filter(
-                                **{f'customer__{field}': value})
+                                **{f'customer_id__{field}': value})
                 if last_field == "vehicle_segment":
-                    coverage_count[coverage] = queryset.values(
+                    coverage_count[coverage.name] = queryset.values(
                         'vehicle_segment').annotate(count=Count('id'))
                 else:
-                    coverage_count[coverage] = queryset.values(
-                        f'customer__{last_field}').annotate(
+                    coverage_count[coverage.name] = queryset.values(
+                        f'customer_id__{last_field}').annotate(
                         count=Count('id'))
 
                 sorted_coverage_count = sorted(
-                    coverage_count.items(), key=lambda x: x[1])
+            coverage_count.items(), 
+            key=lambda x: sum(item['count'] for item in x[1]), 
+            reverse=True
+        )
                 cache.set(cache_key, sorted_coverage_count, timeout=300)
             return sorted_coverage_count
 
@@ -69,7 +73,7 @@ class PolicyRepository(IPolicyRepository):
         months = Date.objects.values("month").distinct()
         for month in months:
             total_policies_by_month[month["month"]] = Policy.objects.filter(
-                date_id__month == month["month"]).count()
+                date_id__month = month["month"]).count()
         return total_policies_by_month
 
     def get_total_policies_by_year(self):
@@ -78,7 +82,7 @@ class PolicyRepository(IPolicyRepository):
         years = Date.objects.values("year").distinct()
         for year in years:
             total_policies_by_year[year["year"]] = Policy.objects.filter(
-                date_id__year == year["year"]).count()
+                date_id__year = year["year"]).count()
         return total_policies_by_year
 
     def get_total_policies_by_quarter(self):
@@ -87,7 +91,7 @@ class PolicyRepository(IPolicyRepository):
         quarters = Date.objects.values("quarter").distinct()
         for quarter in quarters:
             total_policies_by_quarter[quarter["quarter"]] = Policy.objects.filter(
-                date_id__quarter == quarter["quarter"]).count()
+                date_id__quarter = quarter["quarter"]).count()
         return total_policies_by_quarter
 
     def average_premium(self):
@@ -107,7 +111,7 @@ class PolicyRepository(IPolicyRepository):
                     if field == 'vehicle_segment':
                         queryset = queryset.filter(vehicle_segment=value)
                     else:
-                        queryset = queryset.filter(**{f'customer__{field}': value})
+                        queryset = queryset.filter(**{f'customer_id__{field}': value})
                 else:  # The filter without value (either first or last)
                     if field == 'vehicle_segment':
                         queryset = queryset.values('vehicle_segment')
@@ -133,7 +137,7 @@ class PolicyRepository(IPolicyRepository):
             coverage_field = coverage["name"]
             count = queryset.filter(**{coverage_field: True}).count()
             percentage = count / queryset.count() * 100 if queryset.count() > 0 else 0
-            coverage_count_by_premium[coverage] = percentage
+            coverage_count_by_premium[coverage_field] = percentage
         return coverage_count_by_premium
 
     def count_coverages_by_premium_interval(self):

@@ -41,11 +41,11 @@ class Policy(models.Model):
     date_id = models.ForeignKey(Date, on_delete=models.CASCADE, related_name='policies')
     premium = models.IntegerField()
     vehicle_segment = models.CharField(max_length=1, choices = VEHICLE_CHOICES)
-    bodily_injury_liability = models.BooleanField(default=True)
-    personal_injury_protection = models.BooleanField(default=True) 
-    property_damage_liability = models.BooleanField(default=True)
-    collision = models.BooleanField(default=True)
-    comprehensive = models.BooleanField(default=True)
+    bodily_injury_liability = models.BooleanField(default=False)
+    personal_injury_protection = models.BooleanField(default=False) 
+    property_damage_liability = models.BooleanField(default=False)
+    collision = models.BooleanField(default=False)
+    comprehensive = models.BooleanField(default=False)
 
 class Coverage_type(models.Model):
     COVERAGE_CHOICES = [
