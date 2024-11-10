@@ -28,6 +28,6 @@ class CustomerRepository(ICustomerRepository):
         return distribution
     
     def total_clients_with_policies(self):
-           """A method that counts the total number of clients with at least two policies"""
-           queryset = Customer.objects.annotate(num_policies=Count('policy')).filter(num_policies__gt=1)
-           return queryset.count()  
+        """A method that counts the total number of clients with at least two policies"""
+        queryset = Customer.objects.annotate(num_policies=Count('policies')).filter(num_policies__gt=1)
+        return queryset.count()

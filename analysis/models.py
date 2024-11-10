@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Customer(models.Model):
@@ -24,10 +25,10 @@ class Customer(models.Model):
 
 class Date(models.Model):
     date_id = models.AutoField(primary_key=True)
-    date = models.DateField()
-    month = models.IntegerField()
-    year = models.IntegerField()
-    quarter = models.IntegerField()
+    date = models.DateField(default=timezone.now)  
+    month = models.IntegerField(default=timezone.now().month) 
+    year = models.IntegerField(default=timezone.now().year) 
+    quarter = models.IntegerField(default=1) 
     
 class Policy(models.Model):
     VEHICLE_CHOICES = [
