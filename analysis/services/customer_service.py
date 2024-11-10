@@ -14,5 +14,12 @@ class CustomerService(ICustomerService):
             raise TypeError("Filters should be a dictionary")
         result = self.customer_repository.get_customer_distribution(ordered_filters)
         if not isinstance(result, dict):
-            raise ValueError("Expected a dictionary as output")
+            raise ValueError("Expected a dictionary as output in get customer distribution method")
+        return result
+    
+    def total_clients_with_policies(self) -> float:
+        """Get the total number of customers with more than one policy"""
+        result = self.customer_repository.total_clients_with_policies()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float as output in total clients with policies method")
         return result

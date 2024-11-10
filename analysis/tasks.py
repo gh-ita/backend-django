@@ -118,5 +118,43 @@ def get_coverage_perc_by_car_type_task(car_type : str) -> Dict[str, int]:
             raise ValueError("Expected a dictionnary for coverage percentage by car type")
         return result
     except (ValueError, TypeError) as e:
-        return {"error": str(e)}    
+        return {"error": str(e)} 
+    
+#Total of premiums task
+@shared_task
+@inject
+def total_premium() -> float:
+    policy_service = IPolicyService()
+    try:
+        result = policy_service.total_premium()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float for total of premiums")
+        return result
+    except (ValueError, TypeError) as e:
+        return {"error": str(e)} 
+        
+#Total of policies task
+@shared_task
+@inject
+def total_policy() -> float:
+    policy_service = IPolicyService()
+    try:
+        result = policy_service.total_policy()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float for total of policies")
+        return result
+    except (ValueError, TypeError) as e:
+        return {"error": str(e)} 
+#Total of customers with more than one policy task  
+@shared_task
+@inject
+def total_clients_with_policies() -> float:
+    customer_service = ICustomerService()
+    try:
+        result = customer_service.total_clients_with_policies()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float for total of customers with more than one policy")
+        return result
+    except (ValueError, TypeError) as e:
+        return {"error": str(e)} 
 

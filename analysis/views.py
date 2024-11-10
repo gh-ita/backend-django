@@ -163,3 +163,42 @@ class CoverageByCarTypeView(View):
             "task_id": task.id,
             "status": "Task started. Check task status later."
         })
+#Total of premiums view 
+class TotalPremiumView(View):
+  @inject 
+  def  __init__(self, policy_service = IPolicyService, *args, **kwargs ):
+    self.policy_service = policy_service
+    super().__init__(*args, **kwargs)
+     
+  def get(self):
+    task = total_premium.apply_async()
+    return JsonResponse({
+            "task_id": task.id,
+            "status": "Task started. Check task status later."
+        })
+#Total of policies view 
+class TotalPolicyView(View):
+  @inject 
+  def  __init__(self, policy_service = IPolicyService, *args, **kwargs ):
+    self.policy_service = policy_service
+    super().__init__(*args, **kwargs)
+     
+  def get(self):
+    task = total_policy.apply_async()
+    return JsonResponse({
+            "task_id": task.id,
+            "status": "Task started. Check task status later."
+        })
+#Total of customers with more than one policy view 
+class TotalCustomers(View):
+  @inject 
+  def  __init__(self, customer_service = ICustomerService, *args, **kwargs ):
+    self.customer_service = customer_service
+    super().__init__(*args, **kwargs)
+     
+  def get(self):
+    task = total_clients_with_policies.apply_async()
+    return JsonResponse({
+            "task_id": task.id,
+            "status": "Task started. Check task status later."
+        })

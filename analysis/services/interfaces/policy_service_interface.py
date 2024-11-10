@@ -25,3 +25,9 @@ class IPolicyService(ABC):
     @abstractmethod
     def get_coverage_perc_by_car_type(self, car_type):
         pass
+    @abstractmethod
+    def total_premium(self):
+        pass
+    @abstractmethod
+    def total_policy(self):
+        pass

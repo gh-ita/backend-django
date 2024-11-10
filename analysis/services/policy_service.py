@@ -64,3 +64,13 @@ class PolicyService(IPolicyService):
         if not isinstance(result, dict):
             raise ValueError("Expected a dictionnary for coverage percentage by car type")
         
+    def total_premium(self) -> float:
+        result = self.total_premium()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float for the total of premiums")
+        return result
+    def total_policy(self) -> float:
+        result = self.total_policy()
+        if not isinstance(result, float):
+            raise ValueError("Expected a float for the total of policies")
+        return result
