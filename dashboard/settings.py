@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "dashboard.wsgi.application"
+ASGI_APPLICATION = "dashboard.asgi.application"
 
 
 # Database
@@ -126,7 +126,26 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #Default cache
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # In-memory cache (default for development)
-        'TIMEOUT': 3600,  # Cache timeout in seconds (1 hour)
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  
+        'TIMEOUT': 3600,  
     }
 }
+
+INJECTOR_MODULES = [
+    'analysis.injector.AppModule', 
+]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('127.0.0.1', 6379)],  # Redis server configuration
+        },
+    },
+}
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Local Redis URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class IPolicyRepository(ABC):
+class IPolicyService(ABC):
     @abstractmethod
     def get_coverages_count(self) :
         pass
@@ -25,5 +25,3 @@ class IPolicyRepository(ABC):
     @abstractmethod
     def get_coverage_perc_by_car_type(self, car_type):
         pass
-    
-        
