@@ -4,7 +4,6 @@ from django.views import View
 from injector import inject
 from .services.interfaces import *
 from .tasks import *
-from celery.result import AsyncResult
 
 # Create your views here.
 def index(request):
@@ -19,7 +18,8 @@ class CustomerDistributionView(View):
 
     def get(self, request):
         filter_params = request.GET.getlist("filters")
-        
+        if not filter_params :
+          return JsonResponse({"error": "filter parameter is required"}, status=400)
         filters = {}
         for param in filter_params:
             if "=" in param:
@@ -54,6 +54,8 @@ class CoverageCountFilteredView(View):
      
   def get(self, request):
     filter_params = request.GET.getlist("filters")
+    if not filter_params :
+      return JsonResponse({"error": "filter parameter is required"}, status=400)
     filters = {}
     for param in filter_params:
       if "=" in param:
@@ -117,6 +119,8 @@ class AvgPremiumView(View):
      
   def get(self, request):
     filter_params = request.GET.getlist("filters")
+    if not filter_params :
+      return JsonResponse({"error": "filter parameter is required"}, status=400)
     filters = {}
     for param in filter_params:
       if "=" in param:

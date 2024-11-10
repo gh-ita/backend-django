@@ -26,3 +26,8 @@ class CustomerRepository(ICustomerRepository):
             cache.set(cache_key,distribution)
         #return a dict for each value based on the last filter the total count 
         return distribution
+    
+    def total_clients_with_policies(self):
+           """A method that counts the total number of clients with at least two policies"""
+           queryset = Customer.objects.annotate(num_policies=Count('policy')).filter(num_policies__gt=1)
+           return queryset.count()  

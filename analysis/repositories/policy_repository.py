@@ -1,6 +1,6 @@
 from .interfaces import IPolicyRepository
 from ..models import Policy, Coverage_type, Date
-from django.db.models import Count, Avg, Max
+from django.db.models import Count, Avg, Max, Sum
 from django.core.cache import cache
 
 
@@ -178,3 +178,15 @@ class PolicyRepository(IPolicyRepository):
                     coverage_percentage[coverage_field] = count
             cache.set(cache_key, coverage_percentage, timeout=3600)
         return coverage_percentage
+        
+    def total_premium(self):
+        """A method that counts the total amount of premiums"""
+        queryset = Policy.objects.aggregate(total_premium=Sum('premium'))
+        return queryset.get('total_premium', 0)
+    
+    def total_policy(self):
+        """A method that counts the total amount of policies"""
+        queryset = Policy.objects.aggregate(total_policies = Count('policy_id'))
+        return queryset.get("total_policies",0)
+    
+    
